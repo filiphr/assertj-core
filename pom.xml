@@ -204,7 +204,51 @@
         </configuration>
       </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>1.1.10</version>
+          <configuration>
+            <targetClasses>
+              <param>org.assertj.core.*</param>
+            </targetClasses>
+            <excludedClasses>
+              <param>org.assertj.core.internal.asm.*</param>
+              <param>org.assertj.core.internal.cglib.*</param>
+            </excludedClasses>
+            <targetTests>
+              <param>org.assertj.core.*</param>
+            </targetTests>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>pitest-analysis</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <properties>
     <additionalparam />
