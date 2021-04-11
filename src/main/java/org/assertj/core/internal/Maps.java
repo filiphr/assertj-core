@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -835,9 +836,13 @@ public class Maps {
 
   private <V, K> Map<K, V> instantiate(Class<? extends Map> mapClass) {
     try {
-      Constructor<?> constructor = mapClass.getConstructor();
-      return (Map<K, V>) constructor.newInstance();
-      // return objenesis.newInstance(class1);
+      if (mapClass.getName().toLowerCase(Locale.ROOT).contains("insensitive")) {
+        Constructor<?> constructor = mapClass.getConstructor();
+        return (Map<K, V>) constructor.newInstance();
+        // return objenesis.newInstance(class1);
+      } else {
+        return new LinkedHashMap<>();
+      }
     } catch (Exception e) {
       // default map but might not honor mapClass semantics (ex: CaseInsensitiveMap)
       return new LinkedHashMap<>();
