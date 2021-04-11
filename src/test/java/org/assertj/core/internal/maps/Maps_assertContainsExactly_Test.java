@@ -114,6 +114,20 @@ class Maps_assertContainsExactly_Test extends MapsBaseTest {
     verify(failures).failure(info, elementsDifferAtIndex(entry("name", "Yoda"), entry("color", "green"), 0));
   }
 
+  @SuppressWarnings("unchecked")
+  @Test
+  void should_fail_if_actual_with_same_values_contains_given_entries_in_disorder() {
+    // GIVEN
+    AssertionInfo info = someInfo();
+    Map<String, String> actual = new LinkedHashMap<>(2);
+    actual.put("a", "1");
+    actual.put("b", "1");
+    // WHEN
+    expectAssertionError(() -> maps.assertContainsExactly(info, actual, entry("b", "1"), entry("a", "1")));
+    // THEN
+    verify(failures).failure(info, elementsDifferAtIndex(entry("a", "1"), entry("b", "1"), 0));
+  }
+
   @Test
   void should_fail_if_actual_and_expected_entries_have_different_size() {
     // GIVEN

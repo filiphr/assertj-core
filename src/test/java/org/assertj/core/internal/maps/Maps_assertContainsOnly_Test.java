@@ -26,16 +26,21 @@ import static org.assertj.core.util.AssertionsUtil.expectAssertionError;
 import static org.assertj.core.util.FailureMessages.actualIsNull;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
+import org.apache.commons.collections4.map.SingletonMap;
 import org.assertj.core.api.AssertionInfo;
 import org.assertj.core.data.MapEntry;
 import org.assertj.core.internal.MapsBaseTest;
 import org.assertj.core.test.Maps;
 import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Tests for
@@ -98,6 +103,29 @@ class Maps_assertContainsOnly_Test extends MapsBaseTest {
     actual.put("Color", "green");
     // THEN
     maps.assertContainsOnly(someInfo(), actual, entry("Name", "Yoda"), entry("COLOR", "green"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void should_pass_if_unmodifiable_actual_contains_only_expected_entries() {
+    maps.assertContainsOnly(someInfo(), Collections.unmodifiableMap(actual), entry("name", "Yoda"), entry("color", "green"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void should_pass_if_immutable_actual_contains_only_expected_entries() {
+    actual = ImmutableMap.<String, String>builder()
+                         .put("name", "Yoda")
+                         .put("color", "green")
+                         .build();
+    maps.assertContainsOnly(someInfo(), actual, entry("name", "Yoda"), entry("color", "green"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  void should_pass_if_singleton_actual_map_contains_only_expected_entries() {
+    actual = new SingletonMap<>("name", "Yoda");
+    maps.assertContainsOnly(someInfo(), actual, entry("name", "Yoda"));
   }
 
   @Test
